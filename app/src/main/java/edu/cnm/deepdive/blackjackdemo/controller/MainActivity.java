@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
@@ -19,7 +20,9 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
   private RecyclerView handView;
+  private TextView scoreSpot;
   private MainViewModel model;
+  FloatingActionButton fab;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void setupFloatingActionButton() {
-    FloatingActionButton fab = findViewById(R.id.fab);
+    fab = findViewById(R.id.fab);
     fab.setOnClickListener((view) -> model.draw(1));
   }
 
@@ -75,11 +78,20 @@ public class MainActivity extends AppCompatActivity {
   private void setupViewModel() {
     model = ViewModelProviders.of(this).get(MainViewModel.class);
     model.getCards().observe(this, this::updateCards);
+
   }
 
   private void updateCards(List<Card> cards) {
+    int score = model.getHand().getValue().getScore();
     HandAdapter handAdapter = new HandAdapter(this, cards);
     handView.setAdapter(handAdapter);
+    if (score >= 21) {
+      fab.hide();
+    } else {
+      fab.show();
+    }
+    scoreSpot = findViewById(R.id.score_spot);
+    scoreSpot.setText(Integer.toString(score));
   }
 
 }
