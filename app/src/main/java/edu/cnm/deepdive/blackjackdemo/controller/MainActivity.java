@@ -1,5 +1,6 @@
 package edu.cnm.deepdive.blackjackdemo.controller;
 
+import android.annotation.SuppressLint;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
@@ -20,7 +21,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
   private RecyclerView handView;
-  private TextView scoreSpot;
   private MainViewModel model;
   FloatingActionButton fab;
 
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
   private void setupFloatingActionButton() {
     fab = findViewById(R.id.fab);
-    fab.setOnClickListener((view) -> model.draw(1));
+    fab.setOnClickListener((view) -> model.draw());
   }
 
   private void setupRecyclerView() {
@@ -78,9 +78,10 @@ public class MainActivity extends AppCompatActivity {
   private void setupViewModel() {
     model = ViewModelProviders.of(this).get(MainViewModel.class);
     model.getCards().observe(this, this::updateCards);
-
+    getLifecycle().addObserver(model);
   }
 
+  @SuppressLint("SetTextI18n")
   private void updateCards(List<Card> cards) {
     int score = model.getHand().getValue().getScore();
     HandAdapter handAdapter = new HandAdapter(this, cards);
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
     } else {
       fab.show();
     }
-    scoreSpot = findViewById(R.id.score_spot);
+    TextView scoreSpot = findViewById(R.id.score_spot);
     scoreSpot.setText(Integer.toString(score));
   }
 
