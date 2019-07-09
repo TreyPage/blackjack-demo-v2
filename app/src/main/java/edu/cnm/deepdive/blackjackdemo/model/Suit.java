@@ -32,7 +32,7 @@ public enum Suit {
   }
 
   public enum Color {
-    RED, BLACK;
+    RED, BLACK
   }
 
 }
